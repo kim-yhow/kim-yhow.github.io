@@ -151,6 +151,505 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-批作业app数据结构的实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/15/批作业app数据结构的实现/">批作业app数据结构的实现</a>
+    </h1>
+  
+
+        
+        <a href="/2017/10/15/批作业app数据结构的实现/" class="archive-article-date">
+  	<time datetime="2017-10-15T04:48:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>记录一下这个app的数据结构</strong></p>
+<h3 id="QuestItem"><a href="#QuestItem" class="headerlink" title="QuestItem"></a>QuestItem</h3><p>具体思路是：QuestItem类 就是填充listview的单位类。每个单位类中有分数和题号两个基本属性，错题标准和错题数两个重要属性以及一些为了适配器中需要使用的资源id。同时还有一个关于批阅份数的静态变量（基本可以实现计算批阅份数的功能，但总觉得有些不妥），每次更新将增加的错题数加到错题数中。</p>
+<pre><code>public class QuestItem {
+
+private static int SumOfItems;            //批阅的份数，也就是学生数量
+private String QuestNum;        //题号
+private float score;
+private Boolean flag;   //是否是正确的 true表示此题错误  false 表示此题正确
+private int theSumofWrong;  //错误数
+private int WrongOnId;      //图片的id
+private int WrongOffId;     //图片的id
+
+ static{
+     SumOfItems=0;
+ }
+
+public static void setSumOfItems(int sumOfItems) {
+    SumOfItems = sumOfItems;
+}
+
+public QuestItem(String questNum) {
+    QuestNum = questNum;
+    WrongOnId = R.drawable.ic_wrong_on;
+    WrongOffId = R.drawable.ic_wrong_off;
+    theSumofWrong=0;
+
+    flag=false;             //false表示正确
+}
+
+
+public static int AddSumOfItems()
+{
+    return  ++SumOfItems;
+}
+
+
+public  static int getSumOfItems(){
+    return SumOfItems;
+}
+
+public int getWrongOffId() {
+    return WrongOffId;
+}
+
+public String getQuestNum() {
+    return QuestNum;
+}
+
+public void setQuestNum(String questNum) {
+    QuestNum = questNum;
+}
+
+public int getWrongOnId() {
+    return WrongOnId;
+}
+
+public void setWrongOnId(int wrongOnId) {
+    WrongOnId = wrongOnId;
+}
+
+public void setWrongOffId(int wrongOffId) {
+    WrongOffId = wrongOffId;
+}
+
+public Boolean isWrong() {
+    return flag;
+}
+
+//false 表示正确  true 表示这题错误
+public void setFlag(Boolean flag) {
+    this.flag = flag;
+}
+
+public int getTheSumofWrong() {
+    return theSumofWrong;
+}
+
+public void setTheSumofWrong(int theSumofWrong) {
+    this.theSumofWrong = theSumofWrong;
+}
+
+public int addNumofWrong()
+{
+    return ++this.theSumofWrong;
+}
+
+}
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/10/15/批作业app数据结构的实现/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Android的AsyncTask抽象类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/21/Android的AsyncTask抽象类/">Android的AsyncTask抽象类</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/21/Android的AsyncTask抽象类/" class="archive-article-date">
+  	<time datetime="2017-09-21T05:14:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="AsyncTask的使用"><a href="#AsyncTask的使用" class="headerlink" title="AsyncTask的使用"></a>AsyncTask的使用</h2><h3 id="AnsyncTask的简介"><a href="#AnsyncTask的简介" class="headerlink" title="AnsyncTask的简介"></a>AnsyncTask的简介</h3><p>在Android中，我们更新UI的操作必须要在主线程（UI线程）中进行，而下载图片、文件这种操作必须要在子线程中进行，Android为我们提供了Handler机制，实现了子线程与主线程之间的通信。通常做法就是先new出一个子线程Thread在子线程中完成下载操作后，通过handler发送一条Message给主线程，主线程收到消息后，就可以进行UI的更新工作了，如下：</p>
+<pre><code>Handler mHadler = new Handler(){
+    @Override
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        if(msg.what == 1){
+            Bitmap bitmap = (Bitmap) msg.obj;
+            //更新UI...
+        }
+    }
+};
+
+private void download(){
+    new Thread(new Runnable() {
+        @Override
+        public void run() {
+            // 这里进行下载操作...获得了图片的bitmap
+            //下载完后才，向主线程发送Message
+            Message msg = Message.&lt;em&gt;obtain&lt;/em&gt;();
+            msg.obj = bitmap;
+            msg.what = 1;//区分哪一个线程发送的消息
+            mHadler.sendMessage(msg);
+        }
+    }).start();
+}
+</code></pre><p>可以看到，每次要进行下载工作，我们就得先创建出Thread，然后在主线程中写好handler，为了对这个过程进行封装，Android提供了AsyncTask异步任务，AsyncTask对线程和handler进行了封装，使得我们可以直接在AsyncTask中进行UI的更新操作，就好像是在子线程进行UI更新一样。</p>
+<h3 id="AsncTask的参数"><a href="#AsncTask的参数" class="headerlink" title="AsncTask的参数"></a>AsncTask的参数</h3><p>  AsncTask一共指定了三个泛型参数类型，分别有以下响应的功能：<br>    <code>public abstract class AsyncTask&lt;params,progress,result&gt;</code></p>
+<ol>
+<li><p><strong>params</strong> 开始异步任务执行时传入的参数类型，即doInBackground()方法中的参数类型； </p>
+</li>
+<li><p><strong>progress</strong>: 异步任务执行过程中，返回下载进度值的类型，即在doInBackground中调用publishProgress()时传入的参数类型；</p>
+</li>
+<li><p><strong>result</strong>: 异步任务执行完成后，返回的结果类型，即doInBackground()方法的返回值类型；</p>
+</li>
+</ol>
+<h3 id="AsncTask的回调方法"><a href="#AsncTask的回调方法" class="headerlink" title="AsncTask的回调方法"></a>AsncTask的回调方法</h3><ol>
+<li><p>onPreExecute()：在执行后台下载操作之前调用，运行在主线程中；</p>
+</li>
+<li><p>doInBackground()：核心方法，执行后台下载操作的方法，必须实现的一个方法，运行在子线程中；</p>
+</li>
+<li><p>onPostExecute()：后台下载操作完成后调用，运行在主线程中；</p>
+</li>
+</ol>
+<p>因此，AsyncTask的基本生命周期过程为：onPreExecute() —&gt; doInBackground() —&gt; onPostExecute()。其中，onPreExecute()和onPostExecute()分别在下载操作前和下载操作后调用，同时它们是在主线程中进行调用，因此可以在这两个方法中进行UI的更新操作，比如，在onPreExecute()方法中，将下载等待动画显示出来，在onPostExecute()方法中，将下载等待动画进行隐藏。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/21/Android的AsyncTask抽象类/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-python-和-Anaconda" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/20/python-和-Anaconda/">python 和 Anaconda</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/20/python-和-Anaconda/" class="archive-article-date">
+  	<time datetime="2017-09-20T00:22:41.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天安装了Anaconda，发现里面也有了python2.7 要是以后想要安装3.6的话，应该也是可以的吧，不过应该要卸载原先的吧。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/20/python-和-Anaconda/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-使用hexo写博客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/18/使用hexo写博客/">使用hexo写博客</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/18/使用hexo写博客/" class="archive-article-date">
+  	<time datetime="2017-08-18T05:21:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>当然要先进入hexo目录下面 shift + 右击<br>今天终于重新学习了hexo 写博客的方法，准备记录下，以免忘记<br>其实就几步</p>
+<p> <code>hexo clean  #清理缓存</code></p>
+<p> <code>hexo g</code></p>
+<p> <code>hexo s -p 5000 #本地运行</code></p>
+<p> <code>hexo d  #上传到github</code></p>
+<h2 id="写文章"><a href="#写文章" class="headerlink" title="写文章"></a>写文章</h2><p> <code>hexo new &quot;postName&quot; #新建文章</code></p>
+<p> <code>hexo new page &quot;pageName&quot; #新建页面</code></p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p> <code>hexo deploy #部署到GitHub</code></p>
+<p> <code>hexo version  #查看Hexo的版本</code></p>
+<p> <code>HexoEditor 写博客   #在HexoEditor目录下，输入npm start</code></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hexo</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/18/使用hexo写博客/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-linux-创建连接命令-ln-s软连接" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/03/09/linux-创建连接命令-ln-s软连接/">linux 创建连接命令 ln -s软连接</a>
+    </h1>
+  
+
+        
+        <a href="/2017/03/09/linux-创建连接命令-ln-s软连接/" class="archive-article-date">
+  	<time datetime="2017-03-09T13:31:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-03-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>当 我们需要在不同的目录，用到相同的文件时，我们不需要在每一个需要的目录下都放一个必须相同的文件，我们只要在某个固定的目录，放上该文件，然后在其它的 目录下用ln命令链接（link）它就可以，不必重复的占用磁盘空间。例如： </p>
+<pre><code>ln -s /usr/local/mariadb/bin/mysql /usr/bin/mysql
+</code></pre><p>和windows 的快键方式差不多</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">linux</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/03/09/linux-创建连接命令-ln-s软连接/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-关于在linux终端下使用mysql-client" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -608,7 +1107,7 @@ else
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 kim yhow
+    		&copy; 2020 kim yhow
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -716,7 +1215,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">行人检测</a>
+                <a href="javascript:void(0)" class="js-tag color1">linux</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -728,7 +1227,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">多示例学习</a>
+                <a href="javascript:void(0)" class="js-tag color2">matlab</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -736,23 +1235,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">DPM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">SIFT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">matlab</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">linux</a>
+                <a href="javascript:void(0)" class="js-tag color1">多示例学习</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">行人检测</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -764,11 +1255,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">wordpress</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hexo</a>
+                <a href="javascript:void(0)" class="js-tag color4">DPM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">SIFT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -780,7 +1283,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color5">项目日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">深度学习</a>
               </li>
             
             <div class="clearfix"></div>
@@ -937,21 +1444,5 @@ MathJax.Hub.Queue(function() {
 
 </div>
   </div>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<!--<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>
